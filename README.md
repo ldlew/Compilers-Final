@@ -46,11 +46,11 @@ make lint tokenizer
 ---
 
 ## Overview
-`types.h` Defines shared enums/structs (cards, triggers, effects, boards, stack items, output)
-`tokenizer` Tokenizes the JSON-formatted and MTG keywords
-`parser` Walks tokens to build the AST + calls the ability parser for text
-`ability_parser` Converts card rules into triggers / effects / targets
-`engine` Resolves the stack LIFO, checks targets, applies APNAP ordering for triggers, records each step
-`main` Loads input.json, invokes parser/engine, and prints all the states
+- `types.h` Defines shared enums/structs (cards, triggers, effects, boards, stack items, output)
+- `tokenizer` Tokenizes the JSON-formatted and MTG keywords
+- `parser` Walks tokens to build the AST + calls the ability parser for text
+- `ability_parser` Converts card rules into triggers / effects / targets
+- `engine` Resolves the stack LIFO, checks targets, applies APNAP ordering for triggers, records each step
+- `main` Loads input.json, invokes parser/engine, and prints all the states
 
 ---

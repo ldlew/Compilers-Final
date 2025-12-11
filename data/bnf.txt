@@ -1,0 +1,75 @@
+<game_input> ::= "{"
+    "\"cards\"" : <cards_object> ","
+    "\"activePlayer\"" : <string> ","
+    "\"priorityPlayer\"" : <string>
+    [ "," "\"currentPhase\"" : <string> ]
+    "," "\"boards\"" : <boards_object>
+    "," "\"stack\"" : <stack_array>
+  "}"
+
+<cards_object> ::= "{" <card_def_pair> ( "," <card_def_pair> )* "}"
+<card_def_pair> ::= <string> ":" <card_def_object>
+<card_def_object> ::= "{"
+    [ "\"text\"" : <string> ]
+    [ "," "\"types\"" : <string_array> ]
+    [ "," "\"subtypes\"" : <string_array> ]
+    [ "," "\"keywords\"" : <string_array> ]
+    [ "," "\"power\"" : <number> ]
+    [ "," "\"toughness\"" : <number> ]
+    [ "," "\"spellTarget\"" : <token_keyword> ]
+    [ "," "\"spellEffects\"" : <effects_array> ]
+    [ "," "\"triggeredAbilities\"" : <triggered_abilities_array> ]
+  "}"
+
+<triggered_abilities_array> ::= "[" <triggered_ability_object> ( "," <triggered_ability_object> )* "]"
+<triggered_ability_object> ::= "{"
+    "\"trigger\"" : <trigger_condition>
+    "," "\"effects\"" : <effects_array>
+    [ "," "\"isMay\"" : <boolean> ]
+    [ "," "\"text\"" : <string> ]
+  "}"
+<trigger_condition> ::= "{"
+    "\"event\"" : <token_keyword> ","
+    "\"scope\"" : <token_keyword>
+  "}"
+
+<effects_array> ::= "[" <effect_object> ( "," <effect_object> )* "]"
+<effect_object> ::= "{"
+    "\"type\"" : <token_keyword>
+    [ "," "\"value\"" : <number> ]
+    [ "," "\"target\"" : <token_keyword> ]
+  "}"
+
+<boards_object> ::= "{" <board_pair> ( "," <board_pair> )* "}"
+<board_pair> ::= <string> ":" <board_object>
+<board_object> ::= "{"
+    "\"life\"" : <number> ","
+    "\"permanents\"" : <permanents_array>
+  "}"
+<permanents_array> ::= "[" <permanent_object> ( "," <permanent_object> )* "]"
+<permanent_object> ::= "{"
+    "\"id\"" : <string> ","
+    "\"name\"" : <string> ","
+    "\"controller\"" : <string> ","
+    "\"tapped\"" : <boolean>
+  "}"
+
+<stack_array> ::= "[" <stack_item_object> ( "," <stack_item_object> )* "]"
+<stack_item_object> ::= "{"
+    "\"id\"" : <string>
+    "," "\"kind\"" : <string>
+    [ "," "\"sourceName\"" : <string> ]
+    [ "," "\"sourceId\"" : <string> ]
+    [ "," "\"abilityIndex\"" : <number> ]
+    [ "," "\"controller\"" : <string> ]
+    [ "," "\"targetId\"" : <string> ]
+    [ "," "\"targetStackId\"" : <string> ]
+    [ "," "\"targetPlayer\"" : <string> ]
+  "}"
+
+<string_array> ::= "[" <string> ( "," <string> )* "]"
+<string> ::= "\"" (any characters) "\""
+<number> ::= "-"? <digit> <digit>*
+<boolean> ::= "true" | "false"
+<digit> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+<token_keyword> ::= unquoted keywords the tokenizer recognizes (e.g., ENTERS_BATTLEFIELD, DEAL_DAMAGE, NONE, TRUE/FALSE/NULL)

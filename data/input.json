@@ -1,0 +1,84 @@
+{
+  "cards": {
+    "Blood Artist": {
+      "types": [
+        "CREATURE"
+      ],
+      "subtypes": [
+        "Vampire"
+      ],
+      "power": 0,
+      "toughness": 1,
+      "text": "Whenever Blood Artist or another creature dies, target opponent loses 1 life and you gain 1 life."
+    },
+    "Llanowar Elves": {
+      "types": [
+        "CREATURE"
+      ],
+      "subtypes": [
+        "Elf",
+        "Druid"
+      ],
+      "power": 1,
+      "toughness": 1
+    },
+    "Lightning Bolt": {
+      "types": [
+        "INSTANT"
+      ],
+      "text": "Lightning Bolt deals 3 damage to any target."
+    },
+    "Counterspell": {
+      "types": [
+        "INSTANT"
+      ],
+      "text": "Counter target spell."
+    }
+  },
+  "activePlayer": "p1",
+  "turnNumber": 1,
+  "boards": {
+    "p1": {
+      "player": "p1",
+      "life": 20,
+      "permanents": [
+        {
+          "id": "p1_2",
+          "name": "Blood Artist",
+          "controller": "p1"
+        }
+      ]
+    },
+    "p2": {
+      "player": "p2",
+      "life": 20,
+      "permanents": [
+        {
+          "id": "p2_1",
+          "name": "Llanowar Elves",
+          "controller": "p2"
+        }
+      ]
+    }
+  },
+  "stack": [
+    {
+      "id": "spell_1",
+      "kind": "SPELL",
+      "sourceName": "Lightning Bolt",
+      "controller": "p1",
+      "targetId": "p2_1",
+      "targetStackId": "",
+      "targetPlayer": ""
+    },
+    {
+      "id": "spell_2",
+      "kind": "SPELL",
+      "sourceName": "Counterspell",
+      "controller": "p2",
+      "targetId": "",
+      "targetStackId": "spell_1",
+      "targetPlayer": ""
+    }
+  ]
+}

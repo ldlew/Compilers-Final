@@ -1,0 +1,234 @@
+DURING EXAM (save progress):
+git add .
+git commit -m " "
+
+git push -u origin branch-name
+
+-----
+
+-   example.q (Quilt program text)
+-   TOKENIZER (tokenizer.cpp): Chops text into tokens (e.g., LET, ID, OPENPAREN).
+-   PARSER (parser.cpp): Reads tokens, checks grammar (BNF), and builds the AST (the "tree" of shapes).
+-   SHAPES (AST) (shapes.cpp): The tree itself. Each node knows how to draw itself.
+-   output.svg (Final image): The genSVG() method is called on the tree to create this file.
+
+-----
+
+TOKENIZER
+
+Key Function: Symbol getNext(string \&s). Uses Regex (e.g., idExp, keyExp) for pattern-based tokens (e.g., myVar, let).
+Uses simple char checks (e.g., if (s[0] == '(')) for single-character tokens (e.g., (, ), ,, =).
+
+How to Add a New Keyword (e.g., "stack")
+
+1.  tokenizer.h: Add STACK to the Symbol enum.
+    enum Symbol { ..., FUN, EQUALS, STACK };
+
+2.  tokenizer.cpp (in getNext()): Add |stack to the keyExp regex.
+    regex keyExp("^(a|b|turn|sew|let|in|end|val|fun|stack)");
+
+3.  tokenizer.cpp (in getNext()): Add the keyword check.
+    if (keyword=="fun") retVal=FUN;
+    if (keyword=="stack") retVal=STACK; // \<-- ADD THIS
+    if (keyword=="a") retVal=LITERALA;
+
+4.  tokenizer.cpp (in print()): Add the debug print case.
+    case EQUALS: cout \<\< "= symbol"; break;
+    case STACK: cout \<\< "Keyword STACK"; break; // \<-- ADD THIS
+    case LITERALA: cout \<\< "Literal A"; break;
+
+-----
+
+PARSER (parser.cpp & .h)
+
+Job: Read tokens from the tokenizer, check if they follow the grammar (BNF), and build the AST (the Shape tree).
+Key Functions:
+QuiltProgram(): The entry point. Handles let ... in ... end.
+ValDecl() / FunDecl(): Parse val and fun declarations.
+Quilt(): Parses any quilt expression (A, B, turn, sew, etc.).
+Turn() / Sew(): Parse the built-in operations.
+
+How to Add a New Operation (e.g., "stack(A, B)")
+This operation will be just like sew(A, B), so we will copy Sew().
+
+1.  parser.cpp (in Quilt()): Tell Quilt() to recognize the STACK token. Find the sew line and add your stack line below it.
+    if (sym==TURN) return Turn(s,shp);
+    if (sym==SEW) return Sew(s,shp);
+    if (sym==STACK) return Stack(s,shp); // \<-- ADD THIS
+
+2.  parser.cpp: Copy the entire Sew() function.
+
+3.  Paste and rename the copy to Stack().
+
+4.  Modify your new Stack() function:
+    Change new SewnShape() to new StackShape().
+    Change all error messages to say "stack" (this is an easy way to get points\!).
+
+    // This is your new, pasted-and-modified function
+    bool Stack(string \&s,shared\_ptr\<Shape\> shp) {
+    Symbol sym=getNext(s);
+    if (sym==OPENPAREN){
+    // vvvvvvvvvvvvvv  CHANGE THIS  vvvvvvvvvvvvvv
+    shared\_ptr\<Shape\> stacked=shared\_ptr\<Shape\>(new StackShape());
+    bool subex=Quilt(s,stacked);
+    if (subex){
+    sym=getNext(s);
+    if (sym==COMMA){
+    bool subex2=Quilt(s,stacked);
+    if (subex2){
+    sym=getNext(s);
+    if (sym==CLOSEPAREN) {
+    shp-\>addChild(stacked);
+    return true;
+    } else {
+    syntaxError("Expected a ) after second argument to stack"); // \<-- EDIT
+    }
+    }
+    } else {
+    syntaxError(" Expected a , after first argument of stack"); // \<-- EDIT
+    }
+    }
+    } else {
+    syntaxError(" Expected a ( after keyword stack"); // \<-- EDIT
+    }
+    return false;
+    }
+
+-----
+
+SHAPES / AST (shapes.cpp & .h)
+
+Job: To *be* the AST. Each class is one node in the tree.
+Key Virtual Methods:
+genSVG(): Generates the SVG code (the "drawing").
+updateSize(): Calculates the w (width) and h (height) of this shape, often based on its children.
+
+How to Create the New Shape (e.g., "StackShape")
+Copy SewnShape and change its logic.
+
+1.  shapes.h: Copy the SewnShape class declaration. Paste it and rename it to StackShape.
+    class SewnShape : public Shape { ... };
+    class StackShape : public Shape { // \<-- Your new class
+    public:
+    string getShapeName();
+    void updateSize();
+    string genSVG();
+    };
+
+2.  shapes.cpp: Copy the entire SewnShape implementation (the three functions).
+
+3.  Paste and rename all functions from SewnShape:: to StackShape::.
+
+4.  Modify the logic in your new StackShape functions:
+
+    StackShape::getShapeName():
+    return "Stack of "; // Easy\!
+
+    StackShape::updateSize(): This is the critical logic change. Stacking adds HEIGHT, not width.
+    void StackShape::updateSize() {
+    children[0]-\>updateSize();
+    children[1]-\>updateSize();
+
+    ```
+      // Semantic Check: Stacking requires same width!
+      if (children[0]->w != children[1]->w) { // <-- LOGIC CHANGE
+          cerr << "Semantic error: stacked shapes must have same width"<<endl;
+      }
+      
+      w = children[0]->w;                 // <-- LOGIC CHANGE
+      h = children[0]->h + children[1]->h; // <-- LOGIC CHANGE
+    }
+    ```
+
+    StackShape::genSVG(): This is the other critical logic. You must translate the second child *down* (on the Y-axis), not *right* (on the X-axis).
+    string StackShape::genSVG(){  
+    stringstream ss;
+
+    ```
+      int y2 = children[0]->h; // <-- LOGIC CHANGE (get height of first child)
+      
+      ss << "<g>" << children[0]->genSVG()  // First shape at (0,0)
+            // vvvvvvvvvvvv  LOGIC CHANGE  vvvvvvvvvvvv
+            << "<g transform='translate(0, "<< y2 <<")'>\n"  // Translate second child down
+            << children[1]->genSVG() << "</g>\n"
+            <<"</g>\n";
+            
+      return ss.str();
+    }
+    ```
+
+-----
+
+6.  SYMBOL TABLE (symbolTable.h)
+
+Job: A simple dictionary (a map) that stores VAL and FUN definitions.
+What it does: It maps a string (the variable name) to its shared\_ptr\<Shape\> (its definition).
+Parser Use:
+During Declaration: st.add("myVar", ...) (in QuiltProgram())
+Error Check: st.exists("myVar") (to check for duplicates)
+(Not Implemented Yet): A ValUseShape or FunUseShape would use st.find("myVar") to get the definition and render it.
+
+-----
+
+7.  IN-DEPTH EXAMPLE: How 'sew(A, turn(A))' is Built and Drawn
+
+8.  Example Program: let in sew(A, turn(A)) end
+
+9.  The AST Tree (What the Parser builds)
+    The display() function in main.cpp prints this tree.
+
+\+SVG Document
+\+-Sew of
+\+--Literal A
+\+--Turn of
+\+---Literal A
+
+```
+The root is a SewnShape ("Sew of").
+Its first child (children[0]) is a LitA.
+Its second child (children[1]) is a TurnedShape.
+The TurnedShape has one child, LitA.
+```
+
+3.  How genSVG() Draws This Tree (A top-down trace)
+
+4.  Document::genSVG() is called. It calls children[0]-\>genSVG(), which is SewnShape::genSVG().
+
+5.  SewnShape::genSVG() needs to draw its two children.
+    It first calls children[0]-\>genSVG(), which is LitA::genSVG().
+    LitA returns its SVG code: \<g\>\<rect fill='red' .../\>\<ellipse fill='green' .../\>\</g\>
+    Next, SewnShape calculates the position for its second child: int x2 = w/2; (which is 8).
+    It creates a new \<g\> tag to move everything to the right: \<g transform='translate(8, 0)'\>
+    Inside this tag, it calls children[1]-\>genSVG(), which is TurnedShape::genSVG().
+
+6.  TurnedShape::genSVG() is called.
+    It creates its own \<g\> tag for rotation: \<g transform='... rotate(90 8 8)'\>
+    Inside *this* tag, it calls *its* child: children[0]-\>genSVG(), which is LitA::genSVG().
+    This *second* LitA returns its SVG code: \<g\>\<rect fill='red' .../\>\<ellipse fill='green' .../\>\</g\>
+
+7.  Final SVG Output (Simplified)
+    The genSVG() calls build this nested structure.
+
+\<svg ...\> (From Document)
+\<g\> (From SewnShape)
+
+```
+<g>
+  <rect fill='red' ... />
+  <ellipse fill='green' .../>
+</g>
+
+<g transform='translate(8, 0)'> (From SewnShape)
+  <g transform='rotate(90 8 8)'> (From TurnedShape)
+    
+    <g>
+      <rect fill='red' ... />
+      <ellipse fill='green' .../>
+    </g>
+
+  </g>
+</g>
+```
+
+\</g\>
+\</svg\>

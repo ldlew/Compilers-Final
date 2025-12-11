@@ -1,0 +1,45 @@
+{
+  "definitions": {
+    "Lightning Bolt": {
+      "types": ["INSTANT"],
+      "spellTargets": [{ "kind": "CREATURE_OR_PLAYER" }]
+    },
+    "Grizzly Bears": {
+      "types": ["CREATURE"],
+      "power": 2,
+      "toughness": 2
+    },
+    "Slippery Bogle": {
+      "types": ["CREATURE"],
+      "power": 1,
+      "toughness": 1,
+      "keywords": ["HEXPROOF"]
+    }
+  },
+  "activePlayer": "p1",
+  "turnNumber": 1,
+  "boards": {
+    "p1": {
+      "player": "p1",
+      "life": 20,
+      "permanents": [
+        { "id": "p1_c1", "name": "Grizzly Bears" }
+      ]
+    },
+    "p2": {
+      "player": "p2",
+      "life": 20,
+      "permanents": [
+        { "id": "p2_c1", "name": "Grizzly Bears" }
+      ]
+    }
+  },
+  "stack": [
+    {
+      "id": "stack_1",
+      "kind": "SPELL",
+      "sourceName": "Lightning Bolt",
+      "targets": [{ "kind": "CREATURE", "targetId": "p2_c1" }]
+    }
+  ]
+}

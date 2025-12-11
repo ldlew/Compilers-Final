@@ -1,0 +1,99 @@
+{
+  "cards": {
+    "Lightning Bolt": {
+      "types": ["INSTANT"],
+      "text": "Lightning Bolt deals 3 damage to any target."
+    },
+    
+    "Giant Growth": {
+      "types": ["INSTANT"],
+      "text": "Target creature gets +3/+3 until end of turn."
+    },
+    
+    "Doom Blade": {
+      "types": ["INSTANT"],
+      "text": "Destroy target creature."
+    },
+    
+    "Grizzly Bears": {
+      "types": ["CREATURE"],
+      "subtypes": ["Bear"],
+      "power": 2,
+      "toughness": 2
+    },
+    
+    "Llanowar Elves": {
+      "types": ["CREATURE"],
+      "subtypes": ["Elf", "Druid"],
+      "power": 1,
+      "toughness": 1
+    },
+    
+    "Blood Artist": {
+      "types": ["CREATURE"],
+      "subtypes": ["Vampire"],
+      "power": 0,
+      "toughness": 1,
+      "text": "Whenever Blood Artist or another creature dies, target opponent loses 1 life and you gain 1 life."
+    },
+    
+    "Mulldrifter": {
+      "types": ["CREATURE"],
+      "subtypes": ["Elemental"],
+      "power": 2,
+      "toughness": 2,
+      "keywords": ["FLYING"],
+      "text": "When Mulldrifter enters the battlefield, draw two cards."
+    },
+    
+    "Solemn Simulacrum": {
+      "types": ["ARTIFACT", "CREATURE"],
+      "subtypes": ["Golem"],
+      "power": 2,
+      "toughness": 2,
+      "text": "When Solemn Simulacrum enters the battlefield, you may search your library for a basic land. When Solemn Simulacrum dies, you may draw a card."
+    },
+    
+    "Siege Rhino": {
+      "types": ["CREATURE"],
+      "subtypes": ["Rhino"],
+      "power": 4,
+      "toughness": 5,
+      "keywords": ["TRAMPLE"],
+      "text": "When Siege Rhino enters the battlefield, each opponent loses 3 life and you gain 3 life."
+    },
+    
+    "Slippery Bogle": {
+      "types": ["CREATURE"],
+      "subtypes": ["Beast"],
+      "power": 1,
+      "toughness": 1,
+      "keywords": ["HEXPROOF"]
+    },
+
+    "Counterspell": {
+      "types": ["INSTANT"],
+      "text": "Counter target spell."
+    },
+
+    "Shock": {
+      "types": ["INSTANT"],
+      "text": "Shock deals 2 damage to any target."
+    },
+
+    "Healing Salve": {
+      "types": ["INSTANT"],
+      "text": "Target player gains 3 life."
+    },
+
+    "Mind Rot": {
+      "types": ["SORCERY"],
+      "text": "Target opponent discards two cards."
+    },
+
+    "Divination": {
+      "types": ["SORCERY"],
+      "text": "Draw two cards."
+    }
+  }
+}

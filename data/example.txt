@@ -1,0 +1,107 @@
+# STEP 1: PARSE GAME_STATE
+GAME_STATE
+  Players: 2
+  ActivePlayer: Player1
+  Step: Main1
+END_GAME_STATE
+
+# STEP 2: PARSE THE BATTLEFIELD
+BOARD
+  Player: Player1
+  Life: 20
+  MANA_POOL:
+  
+  # Card 1: Example of a Static Ability
+  CARD
+    UniqueID: P1_Archon_1
+    Name: Blazing Archon
+    Types: Creature
+    Subtypes: Archon
+    Tapped: No
+    Power: 5
+    Toughness: 6
+    ABILITY
+      Type: Static
+      Effect: Effect(Global("Creatures can't attack you"))
+    END_ABILITY
+  END_CARD
+
+  # Card 2: Example of a Triggered Ability
+  CARD
+    UniqueID: P1_Riders_1
+    Name: Avalanche Riders
+    Types: Creature
+    Subtypes: Barbarian
+    Tapped: No
+    Power: 2
+    Toughness: 2
+    ABILITY
+      Type: Triggered
+      Trigger: ETB(Self)
+      Effect: Destroy(Target(Permanent(P2_Land_1)))
+      May: No
+    END_ABILITY
+  END_CARD
+
+  # Card 3: Example of a Replacement Effect
+  CARD
+    UniqueID: P1_Colossus_1
+    Name: Darksteel Colossus
+    Types: Artifact, Creature
+    Subtypes: Golem
+    Tapped: No
+    Power: 11
+    Toughness: 11
+    ABILITY
+      Type: Replacement
+      Condition: ZoneChange(Self, Any, Graveyard)
+      Effect: ShuffleInLibrary(Self)
+    END_ABILITY
+  END_CARD
+END_BOARD
+
+# --- Player 2's Battlefield ---
+BOARD
+  Player: Player2
+  Life: 20
+  MANA_POOL:
+  
+  CARD
+    UniqueID: P2_Land_1
+    Name: Forest
+    Supertypes: Basic
+    Types: Land
+    Subtypes: Forest
+    Tapped: No
+  END_CARD
+END_BOARD
+
+# STEP 3: PARSE THE GRAVEYARDS
+GRAVEYARD
+  Player: Player1
+END_GRAVEYARD
+
+GRAVEYARD
+  Player: Player2
+END_GRAVEYARD
+
+# STEP 4: PARSE THE STACK
+# This stack shows the Avalanche Riders' ability
+# targeting the Forest.
+STACK
+  STACK_OBJECT
+    Order: 1
+    Controller: Player1
+    Type: Ability
+    Source: P1_Riders_1
+    Ability: ETB(Self)
+    Target: Target(Permanent(P2_Land_1))
+  END_STACK_OBJECT
+END_STACK
+
+# STEP 5: PARSE PRIORITY
+# Scalable for N players, shows who is current.
+PRIORITY
+  Current: Player1
+  Order: Player1,Player2
+END_PRIORITY
